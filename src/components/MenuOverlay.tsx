@@ -40,7 +40,7 @@ export const MenuOverlay = ({ isOpen, onClose }: MenuOverlayProps) => {
       {/* Left section - 60% - Navigation */}
       <div className="w-[60%] bg-[#f5f5f5] animate-slide-down flex flex-col justify-center px-16">
         <div className="absolute top-8 left-8">
-          <h1 className="text-4xl font-bold">Liko.</h1>
+          <h1 className="text-4xl font-bold text-foreground">Liko.</h1>
         </div>
         
         <nav className="space-y-6">
@@ -50,11 +50,11 @@ export const MenuOverlay = ({ isOpen, onClose }: MenuOverlayProps) => {
               href={item.href}
               className="flex items-center gap-6 group"
             >
-              <span className="text-sm text-muted-foreground">{item.number}</span>
-              <span className="text-7xl font-bold tracking-tight transition-all group-hover:translate-x-4">
+              <span className="text-sm text-gray-500">{item.number}</span>
+              <span className="text-7xl font-bold tracking-tight transition-all group-hover:translate-x-4 text-gray-900">
                 {item.label}
               </span>
-              <span className="text-4xl text-muted-foreground opacity-0 group-hover:opacity-100 transition-all">
+              <span className="text-4xl text-gray-500 opacity-0 group-hover:opacity-100 transition-all">
                 +
               </span>
             </a>
@@ -63,19 +63,19 @@ export const MenuOverlay = ({ isOpen, onClose }: MenuOverlayProps) => {
       </div>
 
       {/* Right section - 40% - Contact & Social */}
-      <div className="w-[40%] bg-background text-foreground animate-slide-up flex flex-col justify-between py-16 px-12">
+      <div className="w-[40%] bg-gray-900 text-white animate-slide-up flex flex-col justify-between py-16 px-12">
         <button
           onClick={onClose}
-          className="self-end hover:rotate-90 transition-transform duration-300"
+          className="self-end hover:rotate-90 transition-transform duration-300 text-white"
         >
           <X size={32} />
         </button>
 
         <div className="space-y-16">
           <div className="space-y-4 text-right">
-            <p className="text-xl">+61404093 954</p>
-            <p className="text-xl">hello contact@diego.com</p>
-            <p className="text-sm text-muted-foreground mt-6">
+            <p className="text-xl text-white">+61404093 954</p>
+            <p className="text-xl text-white">hello contact@diego.com</p>
+            <p className="text-sm text-gray-400 mt-6">
               If in doubt. reach out.
             </p>
           </div>
@@ -85,7 +85,7 @@ export const MenuOverlay = ({ isOpen, onClose }: MenuOverlayProps) => {
               <a
                 key={link.label}
                 href={link.href}
-                className="block text-xl hover:text-muted-foreground transition-colors"
+                className="block text-xl text-white hover:text-gray-400 transition-colors"
               >
                 {link.label}
               </a>

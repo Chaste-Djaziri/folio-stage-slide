@@ -18,11 +18,7 @@ export const ProjectCard = ({
   return (
     <div
       onClick={onClick}
-      className={`
-        relative rounded-2xl overflow-hidden cursor-pointer
-        transition-all duration-500 flex-shrink-0
-        ${isActive ? "w-80 h-96 scale-105" : "w-64 h-80 hover:scale-105"}
-      `}
+      className="relative rounded-2xl overflow-hidden cursor-pointer transition-all duration-500 flex-shrink-0 w-64 h-80 hover:scale-105 pointer-events-auto"
     >
       <img
         src={image}

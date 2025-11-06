@@ -82,8 +82,23 @@ const Index = () => {
 
   const activeProject = projects[activeIndex];
 
-  const handleCardClick = (index: number) => {
-    setActiveIndex(index);
+  // Create a looped array starting from the next card after active
+  const getLoopedProjects = () => {
+    const nextIndex = (activeIndex + 1) % projects.length;
+    const loopedArray = [];
+    
+    for (let i = 0; i < projects.length - 1; i++) {
+      const index = (nextIndex + i) % projects.length;
+      loopedArray.push({ ...projects[index], originalIndex: index });
+    }
+    
+    return loopedArray;
+  };
+
+  const visibleProjects = getLoopedProjects();
+
+  const handleCardClick = (originalIndex: number) => {
+    setActiveIndex(originalIndex);
   };
 
   const handlePrevious = () => {
@@ -107,20 +122,22 @@ const Index = () => {
       </div>
 
       {/* Header */}
-      <header className="relative z-10 flex justify-between items-center px-8 py-8">
+      <header className="relative z-10 flex justify-between items-center px-4 md:px-8 py-8">
         <h1 className="text-4xl font-bold text-white">Liko.</h1>
         <button
           onClick={() => setMenuOpen(true)}
-          className="flex flex-col gap-2 group"
+          className="flex items-center gap-3 group"
         >
-          <span className="block w-12 h-0.5 bg-white transition-all group-hover:w-16" />
-          <span className="block w-12 h-0.5 bg-white transition-all group-hover:w-16" />
-          <span className="ml-auto text-white text-sm font-light">Menu</span>
+          <div className="flex flex-col gap-2">
+            <span className="block w-12 h-0.5 bg-white transition-all group-hover:w-16" />
+            <span className="block w-12 h-0.5 bg-white transition-all group-hover:w-16" />
+          </div>
+          <span className="text-white text-sm font-light">Menu</span>
         </button>
       </header>
 
-      {/* Hero Content */}
-      <div className="relative z-10 px-16 pt-12">
+      {/* Hero Content - Desktop: Left side, Mobile: Center */}
+      <div className="relative z-10 px-4 md:px-16 pt-12 md:absolute md:left-0 md:top-32 md:w-[35%]">
         <div className="flex items-center gap-2 mb-4">
           <ChevronLeft className="text-white" size={24} />
           <span className="text-white text-sm uppercase tracking-wider">
@@ -132,31 +149,34 @@ const Index = () => {
           <p className="text-white text-sm uppercase tracking-widest font-light">
             {activeProject.category}
           </p>
-          <h2 className="text-white text-8xl font-bold leading-none tracking-tight">
+          <h2 className="text-white text-5xl md:text-8xl font-bold leading-none tracking-tight">
             {activeProject.title.split(" ")[0]}
           </h2>
-          <h2 className="text-white text-8xl font-bold leading-none tracking-tight">
+          <h2 className="text-white text-5xl md:text-8xl font-bold leading-none tracking-tight">
             {activeProject.title.split(" ").slice(1).join(" ")}
           </h2>
         </div>
       </div>
 
-      {/* Cards Carousel - Positioned at bottom */}
-      <div className="fixed bottom-24 left-0 right-0 z-20">
-        <div className="flex gap-6 px-8 overflow-x-auto scrollbar-hide">
-          {projects.map((project, index) => (
+      {/* Cards Carousel - Hidden on mobile, visible on desktop starting at 35% */}
+      <div className="hidden md:block fixed bottom-24 left-[35%] right-0 z-20">
+        <div className="flex gap-6 px-8 overflow-hidden pointer-events-none">
+          {visibleProjects.map((project) => (
             <ProjectCard
-              key={project.id}
-              {...project}
-              onClick={() => handleCardClick(index)}
-              isActive={index === activeIndex}
+              key={`${project.id}-${project.originalIndex}`}
+              year={project.year}
+              category={project.category}
+              title={project.title}
+              image={project.image}
+              onClick={() => handleCardClick(project.originalIndex)}
+              isActive={false}
             />
           ))}
         </div>
       </div>
 
       {/* Navigation Controls */}
-      <div className="fixed bottom-8 left-8 z-30 flex items-center gap-6">
+      <div className="fixed bottom-8 left-4 md:left-[35%] z-30 flex items-center gap-6">
         <button
           onClick={handlePrevious}
           className="w-12 h-12 rounded-full border border-white/30 flex items-center justify-center text-white hover:bg-white/10 transition-colors"
@@ -166,7 +186,7 @@ const Index = () => {
         
         <div className="flex items-center gap-4">
           <div className="w-32 h-px bg-white/30" />
-          <span className="text-white text-6xl font-bold">
+          <span className="text-white text-4xl md:text-6xl font-bold">
             {String(activeIndex + 1).padStart(2, "0")}
           </span>
         </div>
