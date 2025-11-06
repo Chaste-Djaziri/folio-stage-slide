@@ -85,25 +85,25 @@ const Index = () => {
     if (!container) return;
 
     const handleWheel = (event: WheelEvent) => {
-      const { deltaY, deltaX } = event;
-      if (Math.abs(deltaY) < Math.abs(deltaX)) return;
+      const { deltaY } = event;
 
       const maxScroll = container.scrollWidth - container.clientWidth;
       if (maxScroll <= 0) return;
 
-      const atStart = container.scrollLeft <= 0 && deltaY < 0;
-      const atEnd =
-        container.scrollLeft >= maxScroll && deltaY > 0;
+      const nextScroll = container.scrollLeft + deltaY;
 
-      if (atStart || atEnd) {
+      if (nextScroll <= 0) {
+        container.scrollLeft = 0;
         return;
       }
 
+      if (nextScroll >= maxScroll) {
+        container.scrollLeft = maxScroll;
+        return;
+      }
+
+      container.scrollLeft = nextScroll;
       event.preventDefault();
-      container.scrollLeft = Math.min(
-        Math.max(container.scrollLeft + deltaY, 0),
-        maxScroll,
-      );
     };
 
     const handleTouchStart = (event: TouchEvent) => {
@@ -118,20 +118,13 @@ const Index = () => {
       const maxScroll = container.scrollWidth - container.clientWidth;
       if (maxScroll <= 0) return;
 
-      const atStart = container.scrollLeft <= 0 && deltaY < 0;
-      const atEnd =
-        container.scrollLeft >= maxScroll && deltaY > 0;
+      const nextScroll = container.scrollLeft + deltaY;
 
-      if (atStart || atEnd) {
-        touchStartRef.current = currentY;
-        return;
-      }
-
-      event.preventDefault();
       container.scrollLeft = Math.min(
-        Math.max(container.scrollLeft + deltaY, 0),
+        Math.max(nextScroll, 0),
         maxScroll,
       );
+      event.preventDefault();
       touchStartRef.current = currentY;
     };
 
@@ -157,18 +150,18 @@ const Index = () => {
   }, []);
 
   return (
-    <div className="relative h-screen overflow-hidden bg-black text-white">
+    <div className="relative min-h-screen overflow-x-hidden bg-black text-white">
       <div
         ref={containerRef}
-        className="no-scrollbar flex h-full w-[200vw] snap-x snap-mandatory overflow-y-hidden overflow-x-scroll scroll-smooth"
+        className="no-scrollbar flex h-screen w-screen overflow-x-auto overflow-y-hidden"
       >
-        <div className="h-full w-screen flex-shrink-0 snap-start">
+        <div className="flex h-screen w-screen flex-shrink-0">
           <HeroSection
             projects={projects}
             onOpenMenu={() => setMenuOpen(true)}
           />
         </div>
-        <div className="h-full w-screen flex-shrink-0 snap-start">
+        <div className="flex h-screen w-screen flex-shrink-0">
           <HorizontalShowcase />
         </div>
       </div>
