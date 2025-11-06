@@ -89,6 +89,48 @@ export default {
             transform: "translateY(0)",
           },
         },
+        "menu-slide-in": {
+          from: {
+            transform: "translateY(-100%)",
+          },
+          to: {
+            transform: "translateY(0)",
+          },
+        },
+        "menu-slide-out": {
+          from: {
+            transform: "translateY(0)",
+          },
+          to: {
+            transform: "translateY(-100%)",
+          },
+        },
+        "menu-slide-in-bottom": {
+          from: {
+            transform: "translateY(100%)",
+          },
+          to: {
+            transform: "translateY(0)",
+          },
+        },
+        "menu-slide-out-bottom": {
+          from: {
+            transform: "translateY(0)",
+          },
+          to: {
+            transform: "translateY(100%)",
+          },
+        },
+        "card-switch": {
+          from: {
+            opacity: "0",
+            transform: "translateY(30px)",
+          },
+          to: {
+            opacity: "1",
+            transform: "translateY(0)",
+          },
+        },
         "fade-in": {
           from: {
             opacity: "0",
@@ -103,6 +145,11 @@ export default {
         "accordion-up": "accordion-up 0.2s ease-out",
         "slide-up": "slide-up 0.8s cubic-bezier(0.65, 0, 0.35, 1)",
         "slide-down": "slide-down 0.8s cubic-bezier(0.65, 0, 0.35, 1)",
+        "menu-slide-in": "menu-slide-in 0.5s ease forwards",
+        "menu-slide-out": "menu-slide-out 0.5s ease forwards",
+        "menu-slide-in-bottom": "menu-slide-in-bottom 0.5s ease forwards",
+        "menu-slide-out-bottom": "menu-slide-out-bottom 0.5s ease forwards",
+        "card-switch": "card-switch 0.6s ease forwards",
         "fade-in": "fade-in 0.5s ease-out",
       },
     },

@@ -160,7 +160,10 @@ const Index = () => {
 
       {/* Cards Carousel - Hidden on mobile, visible on desktop starting at 35% */}
       <div className="hidden md:block fixed bottom-56 left-[35%] right-0 z-20">
-        <div className="flex gap-6 px-8 overflow-hidden pointer-events-none">
+        <div
+          key={activeIndex}
+          className="flex gap-6 px-8 overflow-hidden pointer-events-none animate-card-switch"
+        >
           {visibleProjects.map((project) => (
             <ProjectCard
               key={`${project.id}-${project.originalIndex}`}
@@ -175,20 +178,35 @@ const Index = () => {
         </div>
       </div>
 
-      {/* Navigation Controls - Arrows under first card */}
-      <div className="hidden md:flex fixed bottom-32 left-[35%] z-30 gap-2">
-        <button
-          onClick={handlePrevious}
-          className="w-12 h-12 rounded-full border border-white/30 flex items-center justify-center text-white hover:bg-white/10 transition-colors"
-        >
-          <ChevronLeft size={20} />
-        </button>
-        <button
-          onClick={handleNext}
-          className="w-12 h-12 rounded-full border border-white/30 flex items-center justify-center text-white hover:bg-white/10 transition-colors"
-        >
-          <ChevronRight size={20} />
-        </button>
+      {/* Desktop Navigation Controls with counter connector */}
+      <div className="hidden md:flex fixed bottom-32 left-[35%] right-[5%] z-30 items-center">
+        <div className="flex items-center gap-2">
+          <button
+            onClick={handlePrevious}
+            className="w-12 h-12 rounded-full border border-white/30 flex items-center justify-center text-white hover:bg-white/10 transition-colors"
+          >
+            <ChevronLeft size={20} />
+          </button>
+          <button
+            onClick={handleNext}
+            className="w-12 h-12 rounded-full border border-white/30 flex items-center justify-center text-white hover:bg-white/10 transition-colors"
+          >
+            <ChevronRight size={20} />
+          </button>
+        </div>
+
+        <div className="flex-1 flex items-center">
+          <div className="w-full mx-6 h-px bg-white/30" />
+        </div>
+
+        <div className="flex items-end gap-2 text-white">
+          <span className="text-6xl font-bold leading-none">
+            {String(activeIndex + 1).padStart(2, "0")}
+          </span>
+          <span className="text-sm uppercase tracking-[0.3em] text-white/50">
+            / {String(projects.length).padStart(2, "0")}
+          </span>
+        </div>
       </div>
 
       {/* Mobile Navigation Controls - Bottom of screen */}
@@ -205,14 +223,6 @@ const Index = () => {
         >
           <ChevronRight size={20} />
         </button>
-      </div>
-
-      {/* Number Counter with line connecting from arrows */}
-      <div className="hidden md:flex fixed bottom-32 right-[5%] z-30 items-center gap-4">
-        <span className="text-white text-6xl font-bold">
-          {String(activeIndex + 1).padStart(2, "0")}
-        </span>
-        <div className="h-px bg-white/30 flex-1" style={{ maxWidth: "500px" }} />
       </div>
 
       {/* Mobile Counter */}

@@ -1,5 +1,5 @@
 import { X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 interface MenuOverlayProps {
   isOpen: boolean;
@@ -21,32 +21,68 @@ const socialLinks = [
   { label: "Behance", href: "#" },
 ];
 
+const CLOSE_DELAY_MS = 500;
+
 export const MenuOverlay = ({ isOpen, onClose }: MenuOverlayProps) => {
-  const [isClosing, setIsClosing] = useEffect(() => {
+  const [isClosing, setIsClosing] = useState(false);
+  const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
     if (isOpen) {
+      setIsClosing(false);
+      if (closeTimeoutRef.current) {
+        clearTimeout(closeTimeoutRef.current);
+        closeTimeoutRef.current = null;
+      }
+    }
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (isOpen || isClosing) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "unset";
     }
+
     return () => {
       document.body.style.overflow = "unset";
     };
-  }, [isOpen]);
+  }, [isOpen, isClosing]);
+
+  useEffect(() => {
+    return () => {
+      if (closeTimeoutRef.current) {
+        clearTimeout(closeTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const handleClose = () => {
+    if (closeTimeoutRef.current) return;
+
     setIsClosing(true);
-    setTimeout(() => {
+    closeTimeoutRef.current = setTimeout(() => {
       onClose();
       setIsClosing(false);
-    }, 500);
+      closeTimeoutRef.current = null;
+    }, CLOSE_DELAY_MS);
   };
 
   if (!isOpen && !isClosing) return null;
 
+  const leftPanelAnimation = isClosing
+    ? "animate-menu-slide-out"
+    : "animate-menu-slide-in";
+  const rightPanelAnimation = isClosing
+    ? "animate-menu-slide-out-bottom"
+    : "animate-menu-slide-in-bottom";
+
   return (
-    <div className="fixed inset-0 z-50 flex md:flex-row flex-col">
+    <div className="fixed inset-0 z-50 flex flex-col md:flex-row overflow-hidden">
       {/* Left section - 60% on desktop, full width on mobile - Navigation */}
-      <div className={`md:w-[60%] w-full bg-[#f5f5f5] ${isClosing ? "animate-slide-up" : "animate-slide-down"} flex flex-col justify-center px-8 md:px-16`}>
+      <div
+        className={`flex-1 md:flex-none md:w-[60%] w-full bg-[#f5f5f5] ${leftPanelAnimation} flex flex-col justify-center px-8 md:px-16`}
+      >
         <div className="absolute top-8 left-8 md:left-8">
           <h1 className="text-4xl font-bold text-foreground">Liko.</h1>
         </div>
@@ -78,7 +114,9 @@ export const MenuOverlay = ({ isOpen, onClose }: MenuOverlayProps) => {
       </div>
 
       {/* Right section - 40% on desktop, hidden on mobile - Contact & Social */}
-      <div className={`hidden md:flex md:w-[40%] bg-gray-900 text-white ${isClosing ? "animate-slide-down" : "animate-slide-up"} flex-col justify-between py-16 px-12`}>
+      <div
+        className={`hidden md:flex md:w-[40%] md:flex-none bg-gray-900 text-white ${rightPanelAnimation} flex-col justify-between py-16 px-12`}
+      >
         <button
           onClick={handleClose}
           className="self-end hover:rotate-90 transition-transform duration-300 text-white"
