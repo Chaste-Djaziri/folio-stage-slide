@@ -136,8 +136,8 @@ const Index = () => {
         </button>
       </header>
 
-      {/* Hero Content - Desktop: Left side, Mobile: Center */}
-      <div className="relative z-10 px-4 md:px-16 pt-12 md:absolute md:left-0 md:top-32 md:w-[35%]">
+      {/* Project Info - Positioned next to cards */}
+      <div className="fixed bottom-24 left-4 md:left-8 z-20 max-w-[300px] md:max-w-[30%]">
         <div className="flex items-center gap-2 mb-4">
           <ChevronLeft className="text-white" size={24} />
           <span className="text-white text-sm uppercase tracking-wider">
@@ -149,10 +149,10 @@ const Index = () => {
           <p className="text-white text-sm uppercase tracking-widest font-light">
             {activeProject.category}
           </p>
-          <h2 className="text-white text-5xl md:text-8xl font-bold leading-none tracking-tight">
+          <h2 className="text-white text-4xl md:text-6xl font-bold leading-none tracking-tight">
             {activeProject.title.split(" ")[0]}
           </h2>
-          <h2 className="text-white text-5xl md:text-8xl font-bold leading-none tracking-tight">
+          <h2 className="text-white text-4xl md:text-6xl font-bold leading-none tracking-tight">
             {activeProject.title.split(" ").slice(1).join(" ")}
           </h2>
         </div>
@@ -176,7 +176,7 @@ const Index = () => {
       </div>
 
       {/* Navigation Controls */}
-      <div className="fixed bottom-8 left-4 md:left-[35%] z-30 flex items-center gap-6">
+      <div className="fixed bottom-8 left-4 md:left-8 z-30 flex items-center gap-6">
         <button
           onClick={handlePrevious}
           className="w-12 h-12 rounded-full border border-white/30 flex items-center justify-center text-white hover:bg-white/10 transition-colors"
