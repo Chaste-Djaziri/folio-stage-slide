@@ -136,8 +136,8 @@ const Index = () => {
         </button>
       </header>
 
-      {/* Project Info - Positioned next to cards */}
-      <div className="fixed bottom-24 left-4 md:left-8 z-20 max-w-[300px] md:max-w-[30%]">
+      {/* Project Info - Aligned with cards height */}
+      <div className="fixed bottom-40 md:bottom-56 left-8 md:left-16 z-20 max-w-[300px] md:max-w-[25%]">
         <div className="flex items-center gap-2 mb-4">
           <ChevronLeft className="text-white" size={24} />
           <span className="text-white text-sm uppercase tracking-wider">
@@ -159,7 +159,7 @@ const Index = () => {
       </div>
 
       {/* Cards Carousel - Hidden on mobile, visible on desktop starting at 35% */}
-      <div className="hidden md:block fixed bottom-24 left-[35%] right-0 z-20">
+      <div className="hidden md:block fixed bottom-56 left-[35%] right-0 z-20">
         <div className="flex gap-6 px-8 overflow-hidden pointer-events-none">
           {visibleProjects.map((project) => (
             <ProjectCard
@@ -175,28 +175,51 @@ const Index = () => {
         </div>
       </div>
 
-      {/* Navigation Controls */}
-      <div className="fixed bottom-8 left-4 md:left-8 z-30 flex items-center gap-6">
+      {/* Navigation Controls - Arrows under first card */}
+      <div className="hidden md:flex fixed bottom-32 left-[35%] z-30 gap-0">
         <button
           onClick={handlePrevious}
-          className="w-12 h-12 rounded-full border border-white/30 flex items-center justify-center text-white hover:bg-white/10 transition-colors"
+          className="w-12 h-12 rounded-l-full border border-white/30 flex items-center justify-center text-white hover:bg-white/10 transition-colors"
         >
           <ChevronLeft size={20} />
         </button>
-        
-        <div className="flex items-center gap-4">
-          <div className="w-32 h-px bg-white/30" />
-          <span className="text-white text-4xl md:text-6xl font-bold">
-            {String(activeIndex + 1).padStart(2, "0")}
-          </span>
-        </div>
-
         <button
           onClick={handleNext}
-          className="w-12 h-12 rounded-full border border-white/30 flex items-center justify-center text-white hover:bg-white/10 transition-colors"
+          className="w-12 h-12 rounded-r-full border-l-0 border border-white/30 flex items-center justify-center text-white hover:bg-white/10 transition-colors"
         >
           <ChevronRight size={20} />
         </button>
+      </div>
+
+      {/* Mobile Navigation Controls - Bottom of screen */}
+      <div className="md:hidden fixed bottom-8 left-4 z-30 flex items-center gap-0">
+        <button
+          onClick={handlePrevious}
+          className="w-12 h-12 rounded-l-full border border-white/30 flex items-center justify-center text-white hover:bg-white/10 transition-colors"
+        >
+          <ChevronLeft size={20} />
+        </button>
+        <button
+          onClick={handleNext}
+          className="w-12 h-12 rounded-r-full border-l-0 border border-white/30 flex items-center justify-center text-white hover:bg-white/10 transition-colors"
+        >
+          <ChevronRight size={20} />
+        </button>
+      </div>
+
+      {/* Number Counter under last card with connecting line */}
+      <div className="hidden md:flex fixed bottom-32 z-30 items-center gap-4" style={{ left: `calc(35% + ${(visibleProjects.length - 1) * 288}px + 8rem)` }}>
+        <div className="w-32 h-px bg-white/30" />
+        <span className="text-white text-6xl font-bold">
+          {String(activeIndex + 1).padStart(2, "0")}
+        </span>
+      </div>
+
+      {/* Mobile Counter */}
+      <div className="md:hidden fixed bottom-8 right-4 z-30">
+        <span className="text-white text-4xl font-bold">
+          {String(activeIndex + 1).padStart(2, "0")}
+        </span>
       </div>
 
       {/* Menu Overlay */}
