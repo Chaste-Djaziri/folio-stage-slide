@@ -209,10 +209,10 @@ const Index = () => {
 
       {/* Number Counter with line connecting from arrows */}
       <div className="hidden md:flex fixed bottom-32 right-[5%] z-30 items-center gap-4">
-        <div className="h-px bg-white/30" style={{ width: `calc(100vw - 5% - ${288 * visibleProjects.length + 200}px)` }} />
         <span className="text-white text-6xl font-bold">
           {String(activeIndex + 1).padStart(2, "0")}
         </span>
+        <div className="h-px bg-white/30 flex-1" style={{ maxWidth: "500px" }} />
       </div>
 
       {/* Mobile Counter */}

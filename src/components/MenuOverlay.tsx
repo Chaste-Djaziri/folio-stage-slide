@@ -1,5 +1,5 @@
 import { X } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 interface MenuOverlayProps {
   isOpen: boolean;
@@ -22,7 +22,7 @@ const socialLinks = [
 ];
 
 export const MenuOverlay = ({ isOpen, onClose }: MenuOverlayProps) => {
-  useEffect(() => {
+  const [isClosing, setIsClosing] = useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
     } else {
@@ -33,28 +33,43 @@ export const MenuOverlay = ({ isOpen, onClose }: MenuOverlayProps) => {
     };
   }, [isOpen]);
 
-  if (!isOpen) return null;
+  const handleClose = () => {
+    setIsClosing(true);
+    setTimeout(() => {
+      onClose();
+      setIsClosing(false);
+    }, 500);
+  };
+
+  if (!isOpen && !isClosing) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex">
-      {/* Left section - 60% - Navigation */}
-      <div className="w-[60%] bg-[#f5f5f5] animate-slide-down flex flex-col justify-center px-16">
-        <div className="absolute top-8 left-8">
+    <div className="fixed inset-0 z-50 flex md:flex-row flex-col">
+      {/* Left section - 60% on desktop, full width on mobile - Navigation */}
+      <div className={`md:w-[60%] w-full bg-[#f5f5f5] ${isClosing ? "animate-slide-up" : "animate-slide-down"} flex flex-col justify-center px-8 md:px-16`}>
+        <div className="absolute top-8 left-8 md:left-8">
           <h1 className="text-4xl font-bold text-foreground">Liko.</h1>
         </div>
-        
-        <nav className="space-y-6">
+
+        <button
+          onClick={handleClose}
+          className="md:hidden absolute top-8 right-8 hover:rotate-90 transition-transform duration-300 text-gray-900"
+        >
+          <X size={32} />
+        </button>
+
+        <nav className="space-y-4 md:space-y-6">
           {menuItems.map((item) => (
             <a
               key={item.number}
               href={item.href}
-              className="flex items-center gap-6 group"
+              className="flex items-center gap-4 md:gap-6 group"
             >
               <span className="text-sm text-gray-500">{item.number}</span>
-              <span className="text-7xl font-bold tracking-tight transition-all group-hover:translate-x-4 text-gray-900">
+              <span className="text-4xl md:text-7xl font-bold tracking-tight transition-all group-hover:translate-x-4 text-gray-900">
                 {item.label}
               </span>
-              <span className="text-4xl text-gray-500 opacity-0 group-hover:opacity-100 transition-all">
+              <span className="text-2xl md:text-4xl text-gray-500 opacity-0 group-hover:opacity-100 transition-all">
                 +
               </span>
             </a>
@@ -62,10 +77,10 @@ export const MenuOverlay = ({ isOpen, onClose }: MenuOverlayProps) => {
         </nav>
       </div>
 
-      {/* Right section - 40% - Contact & Social */}
-      <div className="w-[40%] bg-gray-900 text-white animate-slide-up flex flex-col justify-between py-16 px-12">
+      {/* Right section - 40% on desktop, hidden on mobile - Contact & Social */}
+      <div className={`hidden md:flex md:w-[40%] bg-gray-900 text-white ${isClosing ? "animate-slide-down" : "animate-slide-up"} flex-col justify-between py-16 px-12`}>
         <button
-          onClick={onClose}
+          onClick={handleClose}
           className="self-end hover:rotate-90 transition-transform duration-300 text-white"
         >
           <X size={32} />
