@@ -1,15 +1,14 @@
-import { useState } from "react";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { MenuOverlay } from "@/components/MenuOverlay";
-import { ProjectCard } from "@/components/ProjectCard";
-import heroImage from "@/assets/hero-fashion.jpg";
+import { HeroSection, Project } from "@/components/HeroSection";
+import { HorizontalShowcase } from "@/components/HorizontalShowcase";
 import project1 from "@/assets/project1.jpg";
 import project2 from "@/assets/project2.jpg";
 import project3 from "@/assets/project3.jpg";
 import project4 from "@/assets/project4.jpg";
 import project5 from "@/assets/project5.jpg";
 
-const projects = [
+const projects: Project[] = [
   {
     id: 1,
     year: "2021",
@@ -78,161 +77,101 @@ const projects = [
 
 const Index = () => {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [activeIndex, setActiveIndex] = useState(0);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const touchStartRef = useRef<number | null>(null);
 
-  const activeProject = projects[activeIndex];
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
 
-  // Create a looped array starting from the next card after active
-  const getLoopedProjects = () => {
-    const nextIndex = (activeIndex + 1) % projects.length;
-    const loopedArray = [];
-    
-    for (let i = 0; i < projects.length - 1; i++) {
-      const index = (nextIndex + i) % projects.length;
-      loopedArray.push({ ...projects[index], originalIndex: index });
-    }
-    
-    return loopedArray;
-  };
+    const handleWheel = (event: WheelEvent) => {
+      const { deltaY, deltaX } = event;
+      if (Math.abs(deltaY) < Math.abs(deltaX)) return;
 
-  const visibleProjects = getLoopedProjects();
+      const maxScroll = container.scrollWidth - container.clientWidth;
+      if (maxScroll <= 0) return;
 
-  const handleCardClick = (originalIndex: number) => {
-    setActiveIndex(originalIndex);
-  };
+      const atStart = container.scrollLeft <= 0 && deltaY < 0;
+      const atEnd =
+        container.scrollLeft >= maxScroll && deltaY > 0;
 
-  const handlePrevious = () => {
-    setActiveIndex((prev) => (prev === 0 ? projects.length - 1 : prev - 1));
-  };
+      if (atStart || atEnd) {
+        return;
+      }
 
-  const handleNext = () => {
-    setActiveIndex((prev) => (prev === projects.length - 1 ? 0 : prev + 1));
-  };
+      event.preventDefault();
+      container.scrollLeft = Math.min(
+        Math.max(container.scrollLeft + deltaY, 0),
+        maxScroll,
+      );
+    };
+
+    const handleTouchStart = (event: TouchEvent) => {
+      touchStartRef.current = event.touches[0]?.clientY ?? null;
+    };
+
+    const handleTouchMove = (event: TouchEvent) => {
+      if (touchStartRef.current === null) return;
+      const currentY = event.touches[0]?.clientY ?? touchStartRef.current;
+      const deltaY = touchStartRef.current - currentY;
+
+      const maxScroll = container.scrollWidth - container.clientWidth;
+      if (maxScroll <= 0) return;
+
+      const atStart = container.scrollLeft <= 0 && deltaY < 0;
+      const atEnd =
+        container.scrollLeft >= maxScroll && deltaY > 0;
+
+      if (atStart || atEnd) {
+        touchStartRef.current = currentY;
+        return;
+      }
+
+      event.preventDefault();
+      container.scrollLeft = Math.min(
+        Math.max(container.scrollLeft + deltaY, 0),
+        maxScroll,
+      );
+      touchStartRef.current = currentY;
+    };
+
+    const handleTouchEnd = () => {
+      touchStartRef.current = null;
+    };
+
+    container.addEventListener("wheel", handleWheel, { passive: false });
+    container.addEventListener("touchstart", handleTouchStart, {
+      passive: true,
+    });
+    container.addEventListener("touchmove", handleTouchMove, {
+      passive: false,
+    });
+    container.addEventListener("touchend", handleTouchEnd);
+
+    return () => {
+      container.removeEventListener("wheel", handleWheel);
+      container.removeEventListener("touchstart", handleTouchStart);
+      container.removeEventListener("touchmove", handleTouchMove);
+      container.removeEventListener("touchend", handleTouchEnd);
+    };
+  }, []);
 
   return (
-    <div className="relative min-h-screen overflow-hidden">
-      {/* Background Image */}
-      <div className="fixed inset-0 z-0">
-        <img
-          src={activeProject.bgImage}
-          alt="background"
-          className="w-full h-full object-cover transition-all duration-700"
-        />
-        <div className="absolute inset-0 bg-black/60" />
-      </div>
-
-      {/* Header */}
-      <header className="relative z-10 flex justify-between items-center px-4 md:px-8 py-8">
-        <h1 className="text-4xl font-bold text-white">Liko.</h1>
-        <button
-          onClick={() => setMenuOpen(true)}
-          className="flex items-center gap-3 group"
-        >
-          <div className="flex flex-col gap-2">
-            <span className="block w-12 h-0.5 bg-white transition-all group-hover:w-16" />
-            <span className="block w-12 h-0.5 bg-white transition-all group-hover:w-16" />
-          </div>
-          <span className="text-white text-sm font-light">Menu</span>
-        </button>
-      </header>
-
-      {/* Project Info - Aligned with cards height */}
-      <div className="fixed bottom-40 md:bottom-56 left-8 md:left-[10%] z-20 max-w-[300px] md:max-w-[30%]">
-        <div className="flex items-center gap-3 mb-6">
-          <ChevronLeft className="text-white" size={28} />
-          <span className="text-white text-lg uppercase tracking-wider font-light">
-            {activeProject.year}
-          </span>
+    <div className="relative h-screen overflow-hidden bg-black text-white">
+      <div
+        ref={containerRef}
+        className="no-scrollbar flex h-full w-[200vw] snap-x snap-mandatory overflow-y-hidden overflow-x-scroll scroll-smooth"
+      >
+        <div className="h-full w-screen flex-shrink-0 snap-start">
+          <HeroSection
+            projects={projects}
+            onOpenMenu={() => setMenuOpen(true)}
+          />
         </div>
-
-        <div className="space-y-3">
-          <p className="text-white text-base uppercase tracking-widest font-light">
-            {activeProject.category}
-          </p>
-          <h2 className="text-white text-5xl md:text-7xl font-bold leading-none tracking-tight">
-            {activeProject.title.split(" ")[0]}
-          </h2>
-          <h2 className="text-white text-5xl md:text-7xl font-bold leading-none tracking-tight">
-            {activeProject.title.split(" ").slice(1).join(" ")}
-          </h2>
+        <div className="h-full w-screen flex-shrink-0 snap-start">
+          <HorizontalShowcase />
         </div>
       </div>
-
-      {/* Cards Carousel - Hidden on mobile, visible on desktop starting at 35% */}
-      <div className="hidden md:block fixed bottom-56 left-[35%] right-0 z-20">
-        <div
-          key={activeIndex}
-          className="flex gap-6 px-8 overflow-hidden pointer-events-none animate-card-switch"
-        >
-          {visibleProjects.map((project) => (
-            <ProjectCard
-              key={`${project.id}-${project.originalIndex}`}
-              year={project.year}
-              category={project.category}
-              title={project.title}
-              image={project.image}
-              onClick={() => handleCardClick(project.originalIndex)}
-              isActive={false}
-            />
-          ))}
-        </div>
-      </div>
-
-      {/* Desktop Navigation Controls with counter connector */}
-      <div className="hidden md:flex fixed bottom-32 left-[35%] right-[5%] z-30 items-center">
-        <div className="flex items-center gap-2">
-          <button
-            onClick={handlePrevious}
-            className="w-12 h-12 rounded-full border border-white/30 flex items-center justify-center text-white hover:bg-white/10 transition-colors"
-          >
-            <ChevronLeft size={20} />
-          </button>
-          <button
-            onClick={handleNext}
-            className="w-12 h-12 rounded-full border border-white/30 flex items-center justify-center text-white hover:bg-white/10 transition-colors"
-          >
-            <ChevronRight size={20} />
-          </button>
-        </div>
-
-        <div className="flex-1 flex items-center">
-          <div className="w-full mx-6 h-px bg-white/30" />
-        </div>
-
-        <div className="flex items-end gap-2 text-white">
-          <span className="text-6xl font-bold leading-none">
-            {String(activeIndex + 1).padStart(2, "0")}
-          </span>
-          <span className="text-sm uppercase tracking-[0.3em] text-white/50">
-            / {String(projects.length).padStart(2, "0")}
-          </span>
-        </div>
-      </div>
-
-      {/* Mobile Navigation Controls - Bottom of screen */}
-      <div className="md:hidden fixed bottom-8 left-4 z-30 flex items-center gap-2">
-        <button
-          onClick={handlePrevious}
-          className="w-12 h-12 rounded-full border border-white/30 flex items-center justify-center text-white hover:bg-white/10 transition-colors"
-        >
-          <ChevronLeft size={20} />
-        </button>
-        <button
-          onClick={handleNext}
-          className="w-12 h-12 rounded-full border border-white/30 flex items-center justify-center text-white hover:bg-white/10 transition-colors"
-        >
-          <ChevronRight size={20} />
-        </button>
-      </div>
-
-      {/* Mobile Counter */}
-      <div className="md:hidden fixed bottom-8 right-4 z-30">
-        <span className="text-white text-4xl font-bold">
-          {String(activeIndex + 1).padStart(2, "0")}
-        </span>
-      </div>
-
-      {/* Menu Overlay */}
       <MenuOverlay isOpen={menuOpen} onClose={() => setMenuOpen(false)} />
     </div>
   );
