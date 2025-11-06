@@ -137,22 +137,22 @@ const Index = () => {
       </header>
 
       {/* Project Info - Aligned with cards height */}
-      <div className="fixed bottom-40 md:bottom-56 left-8 md:left-16 z-20 max-w-[300px] md:max-w-[25%]">
-        <div className="flex items-center gap-2 mb-4">
-          <ChevronLeft className="text-white" size={24} />
-          <span className="text-white text-sm uppercase tracking-wider">
+      <div className="fixed bottom-40 md:bottom-56 left-8 md:left-[10%] z-20 max-w-[300px] md:max-w-[30%]">
+        <div className="flex items-center gap-3 mb-6">
+          <ChevronLeft className="text-white" size={28} />
+          <span className="text-white text-lg uppercase tracking-wider font-light">
             {activeProject.year}
           </span>
         </div>
-        
-        <div className="space-y-2">
-          <p className="text-white text-sm uppercase tracking-widest font-light">
+
+        <div className="space-y-3">
+          <p className="text-white text-base uppercase tracking-widest font-light">
             {activeProject.category}
           </p>
-          <h2 className="text-white text-4xl md:text-6xl font-bold leading-none tracking-tight">
+          <h2 className="text-white text-5xl md:text-7xl font-bold leading-none tracking-tight">
             {activeProject.title.split(" ")[0]}
           </h2>
-          <h2 className="text-white text-4xl md:text-6xl font-bold leading-none tracking-tight">
+          <h2 className="text-white text-5xl md:text-7xl font-bold leading-none tracking-tight">
             {activeProject.title.split(" ").slice(1).join(" ")}
           </h2>
         </div>
@@ -176,40 +176,40 @@ const Index = () => {
       </div>
 
       {/* Navigation Controls - Arrows under first card */}
-      <div className="hidden md:flex fixed bottom-32 left-[35%] z-30 gap-0">
+      <div className="hidden md:flex fixed bottom-32 left-[35%] z-30 gap-2">
         <button
           onClick={handlePrevious}
-          className="w-12 h-12 rounded-l-full border border-white/30 flex items-center justify-center text-white hover:bg-white/10 transition-colors"
+          className="w-12 h-12 rounded-full border border-white/30 flex items-center justify-center text-white hover:bg-white/10 transition-colors"
         >
           <ChevronLeft size={20} />
         </button>
         <button
           onClick={handleNext}
-          className="w-12 h-12 rounded-r-full border-l-0 border border-white/30 flex items-center justify-center text-white hover:bg-white/10 transition-colors"
+          className="w-12 h-12 rounded-full border border-white/30 flex items-center justify-center text-white hover:bg-white/10 transition-colors"
         >
           <ChevronRight size={20} />
         </button>
       </div>
 
       {/* Mobile Navigation Controls - Bottom of screen */}
-      <div className="md:hidden fixed bottom-8 left-4 z-30 flex items-center gap-0">
+      <div className="md:hidden fixed bottom-8 left-4 z-30 flex items-center gap-2">
         <button
           onClick={handlePrevious}
-          className="w-12 h-12 rounded-l-full border border-white/30 flex items-center justify-center text-white hover:bg-white/10 transition-colors"
+          className="w-12 h-12 rounded-full border border-white/30 flex items-center justify-center text-white hover:bg-white/10 transition-colors"
         >
           <ChevronLeft size={20} />
         </button>
         <button
           onClick={handleNext}
-          className="w-12 h-12 rounded-r-full border-l-0 border border-white/30 flex items-center justify-center text-white hover:bg-white/10 transition-colors"
+          className="w-12 h-12 rounded-full border border-white/30 flex items-center justify-center text-white hover:bg-white/10 transition-colors"
         >
           <ChevronRight size={20} />
         </button>
       </div>
 
-      {/* Number Counter under last card with connecting line */}
-      <div className="hidden md:flex fixed bottom-32 z-30 items-center gap-4" style={{ left: `calc(35% + ${(visibleProjects.length - 1) * 288}px + 8rem)` }}>
-        <div className="w-32 h-px bg-white/30" />
+      {/* Number Counter with line connecting from arrows */}
+      <div className="hidden md:flex fixed bottom-32 right-[5%] z-30 items-center gap-4">
+        <div className="h-px bg-white/30" style={{ width: `calc(100vw - 5% - ${288 * visibleProjects.length + 200}px)` }} />
         <span className="text-white text-6xl font-bold">
           {String(activeIndex + 1).padStart(2, "0")}
         </span>
