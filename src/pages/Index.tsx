@@ -162,7 +162,7 @@ const Index = () => {
           />
         </div>
         <div className="flex h-screen w-screen flex-shrink-0">
-          <HorizontalShowcase />
+          <HorizontalShowcase onOpenMenu={() => setMenuOpen(true)} />
         </div>
       </div>
       <MenuOverlay isOpen={menuOpen} onClose={() => setMenuOpen(false)} />
